@@ -2,7 +2,10 @@
 #define _EPEG_PRIVATE_H
 
 #include <stdio.h>
+#if !_MSC_VER
 #include <unistd.h>
+#include <setjmp.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -10,18 +13,23 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <setjmp.h>
 #include <jpeglib.h>
+#if WITH_EXIF
 #include <libexif/exif-data.h>
+#endif
 
+#if !_MSC_VER
 #include "config.h"
+#endif
 
 typedef struct _epeg_error_mgr *emptr;
 
 struct _epeg_error_mgr
 {
       struct     jpeg_error_mgr pub;
+#if !__cplusplus
       jmp_buf    setjmp_buffer;
+#endif
 };
 
 struct _Epeg_Image

@@ -1,6 +1,16 @@
 #include "Epeg.h"
 #include "epeg_private.h"
 #include <jerror.h>
+#if _MSC_VER
+#define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
+#include <windows.h>
+#if __cplusplus
+#include <algorithm>
+#define MIN std::min
+#define MAX std::max
+#endif
+#endif
 
 static Epeg_Image   *_epeg_open_header         (Epeg_Image *im);
 static int           _epeg_decode              (Epeg_Image *im);
@@ -13,7 +23,9 @@ static void          _epeg_fatal_error_handler (j_common_ptr cinfo);
 
 static const JOCTET fake_EOI[2] = { 0xFF, JPEG_EOI };
 
+#if WITH_EXIF
 static ExifByteOrder exif_byte_order = EXIF_BYTE_ORDER_INTEL;
+#endif // WITH_EXIF
 
 /**
  * Open a JPEG image by filename.
@@ -31,6 +43,7 @@ static ExifByteOrder exif_byte_order = EXIF_BYTE_ORDER_INTEL;
  * 
  * See also: epeg_memory_open(), epeg_close()
  */
+#if WITH_FILE_IO
 EAPI Epeg_Image *
 epeg_file_open(const char *file)
 {
@@ -56,6 +69,7 @@ epeg_file_open(const char *file)
    im->out.quality = 75;
    return _epeg_open_header(im);
 }
+#endif
 
 /**
  * Open a JPEG image stored in memory.
@@ -74,7 +88,7 @@ epeg_memory_open(unsigned char *data, int size)
 {
    Epeg_Image *im;
    
-   im = calloc(1, sizeof(Epeg_Image));
+   im = (Epeg_Image*)calloc(1, sizeof(Epeg_Image));
    if (!im) return NULL;
    
    im->out.quality = 75;
@@ -239,7 +253,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 1);
+	pix = (unsigned char*)malloc(w * h * 1);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -260,7 +274,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 3);
+	pix = (unsigned char*)malloc(w * h * 3);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -283,7 +297,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 3);
+	pix = (unsigned char*)malloc(w * h * 3);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -306,7 +320,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 3);
+	pix = (unsigned char*)malloc(w * h * 3);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -329,7 +343,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 4);
+	pix = (unsigned char*)malloc(w * h * 4);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -353,7 +367,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 4);
+	pix = (unsigned char*)malloc(w * h * 4);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -377,7 +391,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned int *pix, *p;
 	
-	pix = malloc(w * h * 4);
+	pix = (unsigned int*)malloc(w * h * 4);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -398,7 +412,7 @@ epeg_pixels_get(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 4);
+	pix = (unsigned char*)malloc(w * h * 4);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -485,7 +499,7 @@ epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 3);
+	pix = (unsigned char*)malloc(w * h * 3);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -508,7 +522,7 @@ epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 3);
+	pix = (unsigned char*)malloc(w * h * 3);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -531,7 +545,7 @@ epeg_pixels_get_as_RGB8(Epeg_Image *im, int x, int y,  int w, int h)
      {
 	unsigned char *pix, *p;
 	
-	pix = malloc(w * h * 3);
+	pix = (unsigned char*)malloc(w * h * 3);
 	if (!pix) return NULL;
 	for (yy = y + oy; yy < hh; yy++)
 	  {
@@ -791,6 +805,7 @@ _epeg_open_header(Epeg_Image *im)
    im->jerr.pub.format_message = _format_message;
 #endif
    
+#if !__cplusplus
    if (setjmp(im->jerr.setjmp_buffer))
      {
 	error:
@@ -798,6 +813,9 @@ _epeg_open_header(Epeg_Image *im)
 	im = NULL;
 	return NULL;
      }
+#else
+try {
+#endif
    
    jpeg_create_decompress(&(im->in.jinfo));
    jpeg_save_markers(&(im->in.jinfo), JPEG_APP0 + 7, 1024);
@@ -811,7 +829,7 @@ _epeg_open_header(Epeg_Image *im)
    else
      {
 	/* Setup RAM source manager. */
-	src_mgr = calloc(1, sizeof(struct jpeg_source_mgr));
+	src_mgr = (jpeg_source_mgr*)calloc(1, sizeof(struct jpeg_source_mgr));
 	if (!src_mgr) goto error;
 	src_mgr->init_source = _jpeg_init_source;
 	src_mgr->fill_input_buffer = _jpeg_fill_input_buffer;
@@ -843,7 +861,7 @@ _epeg_open_header(Epeg_Image *im)
 	if (m->marker == JPEG_COM)
 	  {
 	     if (im->in.comment) free(im->in.comment);
-	     im->in.comment = malloc(m->data_length + 1);
+	     im->in.comment = (char*)malloc(m->data_length + 1);
 	     if (im->in.comment)
 	       {
 		  memcpy(im->in.comment, m->data, m->data_length);
@@ -857,7 +875,7 @@ _epeg_open_header(Epeg_Image *im)
 	       {
 		  char *p, *p2;
 		  
-		  p = malloc(m->data_length + 1);
+		  p = (char*)malloc(m->data_length + 1);
 		  if (p)
 		    {
 		       memcpy(p, m->data, m->data_length);
@@ -884,6 +902,7 @@ _epeg_open_header(Epeg_Image *im)
 	  }
 	else if (m->marker == (JPEG_APP0 + 1))
 	{
+#if WITH_EXIF
 	    /*
 	    *	Look for an Exif Orientation tag. If found,
 	    *	store it in im->in.orientation. Later, this will
@@ -901,8 +920,22 @@ _epeg_open_header(Epeg_Image *im)
 	     	}
 	    }            
             exif_data_unref(ed);
+#endif
      	}
     }
+#if __cplusplus
+    }
+     catch(...)
+{
+	epeg_close(im);
+	im = NULL;
+	return NULL;
+}
+error:
+	epeg_close(im);
+	im = NULL;
+	return NULL;
+#endif
     return im;
 }
 
@@ -970,15 +1003,20 @@ _epeg_decode(Epeg_Image *im)
    im->jerr.pub.format_message = _format_message;
 #endif
 
+#if !__cplusplus
    if (setjmp(im->jerr.setjmp_buffer))
      return 2;
+#else
+try 
+{
+#endif
 
    jpeg_calc_output_dimensions(&(im->in.jinfo));
    
-   im->pixels = malloc(im->in.jinfo.output_width * im->in.jinfo.output_height * im->in.jinfo.output_components);
+   im->pixels = (unsigned char*)malloc(im->in.jinfo.output_width * im->in.jinfo.output_height * im->in.jinfo.output_components);
    if (!im->pixels) return 1;
 	
-   im->lines = malloc(im->in.jinfo.output_height * sizeof(char *));
+   im->lines = (unsigned char**)malloc(im->in.jinfo.output_height * sizeof(char *));
    if (!im->lines)
      {
 	free(im->pixels);
@@ -1005,6 +1043,13 @@ _epeg_decode(Epeg_Image *im)
      }
    
    jpeg_finish_decompress(&(im->in.jinfo));
+#if __cplusplus
+}
+catch(...)
+{
+     return 2;
+}
+#endif
    
    return 0;
 }
@@ -1088,15 +1133,20 @@ _epeg_decode_for_trim(Epeg_Image *im)
    im->jerr.pub.format_message = _format_message;
 #endif
    
+#if !__cplusplus
    if (setjmp(im->jerr.setjmp_buffer))
      return 1;
+#else
+try 
+{
+#endif
 
    jpeg_calc_output_dimensions(&(im->in.jinfo));
 
-   im->pixels = malloc(im->in.jinfo.output_width * im->in.jinfo.output_height * im->in.jinfo.output_components);
+   im->pixels = (unsigned char*)malloc(im->in.jinfo.output_width * im->in.jinfo.output_height * im->in.jinfo.output_components);
    if (!im->pixels) return 1;
    
-   im->lines = malloc(im->in.jinfo.output_height * sizeof(char *));
+   im->lines = (unsigned char**)malloc(im->in.jinfo.output_height * sizeof(char *));
    if (!im->lines)
      {
 	free(im->pixels);
@@ -1115,6 +1165,13 @@ _epeg_decode_for_trim(Epeg_Image *im)
 			 im->in.jinfo.rec_outbuf_height);
    
    jpeg_finish_decompress(&(im->in.jinfo));
+#if __cplusplus
+}
+catch(...)
+{
+return 1;
+}
+#endif
    
    return 0;
 }
@@ -1145,6 +1202,7 @@ struct epeg_destination_mgr
    unsigned char *buf;
 };
 
+#if WITH_EXIF
 /* Get an existing tag, or create one if it doesn't exist */
 static ExifEntry *init_tag(ExifData *exif, ExifIfd ifd, ExifTag tag)
 {
@@ -1158,6 +1216,7 @@ static ExifEntry *init_tag(ExifData *exif, ExifIfd ifd, ExifTag tag)
     }
     return entry;
 }
+#endif
 
 static int
 _epeg_encode(Epeg_Image *im)
@@ -1188,12 +1247,17 @@ _epeg_encode(Epeg_Image *im)
    im->jerr.pub.format_message = _format_message;
 #endif
    
+#if !__cplusplus
    if (setjmp(im->jerr.setjmp_buffer))
      {
 	ok = 1;
 	im->error = 1;
 	goto done;
      }
+#else
+try
+{
+#endif
 
    jpeg_create_compress(&(im->out.jinfo));
    if (im->out.f)
@@ -1203,13 +1267,13 @@ _epeg_encode(Epeg_Image *im)
 	*(im->out.mem.data) = NULL;
 	*(im->out.mem.size) = 0;
 	/* Setup RAM destination manager */
-	dst_mgr = calloc(1, sizeof(struct epeg_destination_mgr));
+	dst_mgr = (epeg_destination_mgr*)calloc(1, sizeof(struct epeg_destination_mgr));
 	if (!dst_mgr) return 1;
 	dst_mgr->dst_mgr.init_destination = _jpeg_init_destination;
 	dst_mgr->dst_mgr.empty_output_buffer = _jpeg_empty_output_buffer;
 	dst_mgr->dst_mgr.term_destination = _jpeg_term_destination;
 	dst_mgr->im = im;
-	dst_mgr->buf = malloc(65536);
+	dst_mgr->buf = (unsigned char*)malloc(65536);
 	if (!dst_mgr->buf)
 	  {
 	     ok = 1;
@@ -1237,6 +1301,7 @@ _epeg_encode(Epeg_Image *im)
      }
    jpeg_start_compress(&(im->out.jinfo), TRUE);
 
+#if WITH_EXIF
    /* Set the image options for Exif */
    ExifData *exif = exif_data_new();
    exif_data_set_option(exif, EXIF_DATA_OPTION_FOLLOW_SPECIFICATION);
@@ -1255,10 +1320,11 @@ _epeg_encode(Epeg_Image *im)
    jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 1, exif_data, exif_data_len);
    exif_data_unref(exif);
    free(exif_data);
+#endif
 
    /* Output comment if there is one */
    if (im->out.comment && *im->out.comment)
-     jpeg_write_marker(&(im->out.jinfo), JPEG_COM, im->out.comment, strlen(im->out.comment));
+     jpeg_write_marker(&(im->out.jinfo), JPEG_COM, (JOCTET*)im->out.comment, strlen(im->out.comment));
    
    /* Output thumbnail info in APP7 */
    if (im->out.thumbnail_info)
@@ -1268,22 +1334,31 @@ _epeg_encode(Epeg_Image *im)
 	if (im->in.file)
 	  {
 	     snprintf(buf, sizeof(buf), "Thumb::URI\nfile://%s", im->in.file);
-	     jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
+	     jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7,(JOCTET*) buf, strlen(buf));
 	     snprintf(buf, sizeof(buf), "Thumb::MTime\n%llu", (unsigned long long int)im->stat_info.st_mtime);
 	  }
-	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
+	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, (JOCTET*)buf, strlen(buf));
 	snprintf(buf, sizeof(buf), "Thumb::Image::Width\n%i", im->in.w);
-	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
+	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, (JOCTET*)buf, strlen(buf));
 	snprintf(buf, sizeof(buf), "Thumb::Image::Height\n%i", im->in.h);
-	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
+	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, (JOCTET*)buf, strlen(buf));
 	snprintf(buf, sizeof(buf), "Thumb::Mimetype\nimage/jpeg");
-	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, buf, strlen(buf));
+	jpeg_write_marker(&(im->out.jinfo), JPEG_APP0 + 7, (JOCTET*)buf, strlen(buf));
      }
    
    while (im->out.jinfo.next_scanline < im->out.h)
      jpeg_write_scanlines(&(im->out.jinfo), &(im->lines[im->out.jinfo.next_scanline]), 1);
    jpeg_finish_compress(&(im->out.jinfo));
 
+#if __cplusplus
+}
+catch(...)
+     {
+	ok = 1;
+	im->error = 1;
+	goto done;
+     }
+#endif
    done:
    if ((im->in.f) || (im->in.mem.data != NULL)) jpeg_destroy_decompress(&(im->in.jinfo));
    if ((im->in.f) && (im->in.file)) fclose(im->in.f);
@@ -1307,7 +1382,11 @@ _epeg_fatal_error_handler(j_common_ptr cinfo)
    emptr errmgr;
    
    errmgr = (emptr)cinfo->err;
+#if !__cplusplus
    longjmp(errmgr->setjmp_buffer, 1);
+#else
+    throw new std::exception("failed");
+#endif
    return;
 }
 
@@ -1372,7 +1451,7 @@ _jpeg_empty_output_buffer(j_compress_ptr cinfo)
    dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
    psize = *(dst_mgr->im->out.mem.size);
    *(dst_mgr->im->out.mem.size) += 65536;
-   p = realloc(*(dst_mgr->im->out.mem.data), *(dst_mgr->im->out.mem.size));
+   p = (unsigned char*)realloc(*(dst_mgr->im->out.mem.data), *(dst_mgr->im->out.mem.size));
    if (p)
      {
 	*(dst_mgr->im->out.mem.data) = p;
@@ -1395,7 +1474,7 @@ _jpeg_term_destination(j_compress_ptr cinfo)
    dst_mgr = (struct epeg_destination_mgr *)cinfo->dest;
    psize = *(dst_mgr->im->out.mem.size);
    *(dst_mgr->im->out.mem.size) += 65536 - dst_mgr->dst_mgr.free_in_buffer;
-   p = realloc(*(dst_mgr->im->out.mem.data), *(dst_mgr->im->out.mem.size));
+   p = (unsigned char*)realloc(*(dst_mgr->im->out.mem.data), *(dst_mgr->im->out.mem.size));
    if (p)
      {
 	*(dst_mgr->im->out.mem.data) = p;

@@ -4,12 +4,17 @@
 #ifdef EAPI
 #undef EAPI
 #endif
-#ifdef WIN32
+#ifdef _WIN32
+#if BUILD_DLL
 # ifdef BUILDING_DLL
 #  define EAPI __declspec(dllexport)
 # else
 #  define EAPI __declspec(dllimport)
 # endif
+#else
+#define EAPI
+#pragma warning(disable:4996 4018 4267) //POSIX function names, signed/unsigned, size_t to unsigned int
+#endif
 #else
 # ifdef __GNUC__
 #  if __GNUC__ >= 4
