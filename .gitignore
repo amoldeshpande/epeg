@@ -32,3 +32,5 @@ epeg-uninstalled.pc
 epeg.spec
 src/msvs/Intermediate/
 src/msvs/Output/
+src/msvs/UnitTest/x64/
+src/msvs/x64/

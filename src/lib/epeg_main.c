@@ -931,12 +931,14 @@ try {
 	im = NULL;
 	return NULL;
 }
+#endif
+    return im;
+#if __cplusplus
 error:
 	epeg_close(im);
 	im = NULL;
 	return NULL;
 #endif
-    return im;
 }
 
 /**
