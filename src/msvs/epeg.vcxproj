@@ -108,9 +108,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;%(PreprocessorDefinitions);WITH_EXIF=1;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
-      <AdditionalIncludeDirectories>I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>I:\github\libexif-0.6.20;I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -123,9 +123,9 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions);WITH_EXIF=1;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
-      <AdditionalIncludeDirectories>I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>I:\github\libexif-0.6.20;I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -140,9 +140,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;%(PreprocessorDefinitions);WITH_EXIF=1;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
-      <AdditionalIncludeDirectories>I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>I:\github\libexif-0.6.20;I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>
@@ -159,9 +159,9 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions);WITH_EXIF=1;</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
-      <AdditionalIncludeDirectories>I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>I:\github\libexif-0.6.20;I:\github\libjpeg-turbo\1.4.x;%(AdditionalIncludeDirectories);$(MSBuildThisFileDirectory);$(SolutionDir)..\lib</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
     </ClCompile>

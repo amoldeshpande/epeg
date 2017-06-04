@@ -36,11 +36,16 @@ namespace UnitTest
         {
             auto filebuf = ReadAllBytes(R"(f:\photos\targets\WP_20170512_11_37_00_Rich_LI.jpg)");
             auto im = epeg_memory_open(&filebuf[0], filebuf.size());
-            epeg_decode_size_set(im, 1024, 768);
-            epeg_quality_set(im, 85);
-            epeg_file_output_set(im, R"(f:\photos\targets\WP_20170512_11_37_00_Rich_LI_epeg.jpg)");
-            epeg_encode(im);
-            epeg_close(im);
+            if (im != nullptr)
+            {
+                int w, h;
+                epeg_size_get(im, &w, &h);
+                epeg_decode_size_set(im, 1024, (int)(1024 * ((float)h / (float)w)));
+                epeg_quality_set(im, 85);
+                epeg_file_output_set(im, R"(f:\photos\targets\WP_20170512_11_37_00_Rich_LI_epeg.jpg)");
+                epeg_encode(im);
+                epeg_close(im);
+            }
         }
 
     };
